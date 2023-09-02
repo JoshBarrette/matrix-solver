@@ -1,17 +1,18 @@
 #include <iostream>
 #include "utils.h"
+#include "rowreduce.h"
 
 using namespace std;
 
 int main() {
-	matrix_t vectorMatrix;
-	fillVectorMatrixFromArray(vectorMatrix);
-	printVecMatrix(vectorMatrix);
+	double** arrayMatrix;
+	fillArrayMatrixFromArray(arrayMatrix);
+	printArrayMatrix(arrayMatrix);
 
 	printf("\n");
 
-	double** arrayMatrix;
-	fillArrayMatrixFromArray(arrayMatrix);
+	// multiplyArrayRowAndAdd(arrayMatrix, 0, 1, -2);
+	descend(arrayMatrix);
 	printArrayMatrix(arrayMatrix);
 
 	return 0;

@@ -3,13 +3,23 @@
 
 using namespace std;
 
-void fillVectorMatrixFromArray(matrix_t& m) {
+/*
+	matrix_t vectorMatrix;
+	fillVectorMatrixFromArray(vectorMatrix);
+	printVecMatrix(vectorMatrix);
+
+	double** arrayMatrix;
+	fillArrayMatrixFromArray(arrayMatrix);
+	printArrayMatrix(arrayMatrix);
+*/
+
+void fillVectorMatrixFromArray(matrix_t &matrix) {
 	for (int i = 0; i < ROWS; i++) {
 		row_t row;
 		for (int j = 0; j < COLS; j++) {
 			row.push_back(CONST_MATRIX[i][j]);
 		}
-		m.push_back(row);
+		matrix.push_back(row);
 	}
 }
 
@@ -22,21 +32,53 @@ void printVecMatrix(const matrix_t matrix) {
 	}
 }
 
-void fillArrayMatrixFromArray(double**& m) {
-	m = new double* [ROWS];
+void fillArrayMatrixFromArray(double**& array) {
+	array = new double* [ROWS];
 	for (int i = 0; i < ROWS; i++) {
-		m[i] = new double[COLS];
+		array[i] = new double[COLS];
 		for (int j = 0; j < COLS; j++) {
-			m[i][j] = CONST_MATRIX[i][j];
+			array[i][j] = CONST_MATRIX[i][j];
 		}
 	}
 }
 
-void printArrayMatrix(double** arr) {
+void printArrayMatrix(double** array) {
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLS; j++) {
-			printf("%7.1f", arr[i][j]);
+			printf("%7.1f", array[i][j]);
 		}
 		cout << endl;
+	}
+}
+
+void multiplyArrayRow(double** array, int row, double mult) {
+	for (int i = 0; i < COLS; i++) {
+		if (array[row][i] == 0) {
+			continue;
+		}
+		
+		array[row][i] = array[row][i] * mult;
+	}
+}
+
+void divideArrayRow(double** array, int row, double div) {
+	for (int i = 0; i < COLS; i++) {
+		if (array[row][i] == 0) {
+			continue;
+		}
+
+		array[row][i] = array[row][i] / div;
+	}
+}
+
+void multiplyArrayRowAndAdd(double** array, int fromRow, int toRow, double mult) {
+	for (int i = 0; i < COLS; i++) {
+		array[toRow][i] += array[fromRow][i] * mult;
+	}
+}
+
+void divideArrayRowAndAdd(double** array, int fromRow, int toRow, double div) {
+	for (int i = 0; i < COLS; i++) {
+		array[toRow][i] += array[fromRow][i] / div;
 	}
 }

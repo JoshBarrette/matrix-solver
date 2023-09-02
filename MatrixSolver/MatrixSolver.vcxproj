@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="examples.cpp" />
+    <ClCompile Include="rowreduce.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="examples.h" />
+    <ClInclude Include="rowreduce.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
