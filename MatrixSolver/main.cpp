@@ -6,14 +6,13 @@ using namespace std;
 
 int main() {
 	double** arrayMatrix;
-	fillArrayMatrixFromArray(arrayMatrix);
-	printArrayMatrix(arrayMatrix);
+	utils::fillArrayMatrixFromArray(arrayMatrix);
+	utils::printArrayMatrix(arrayMatrix);
 
 	printf("\n");
 
-	// multiplyArrayRowAndAdd(arrayMatrix, 0, 1, -2);
-	descend(arrayMatrix);
-	printArrayMatrix(arrayMatrix);
+	rowreduce::rowReduce(arrayMatrix);
+	utils::printArrayMatrix(arrayMatrix);
 
 	return 0;
 }

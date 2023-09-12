@@ -1,23 +1,44 @@
 #include "rowreduce.h"
 #include "utils.h"
 
-// TODO: this still doesn't catch some edge cases (free variables)
-void descend(double** array) {
-    int lastRow = ROWS - 1;
+void rowreduce::rowReduce(double** array) {
+    descend(array);
+    ascend(array);
+}
+
+void rowreduce::descend(double** array) {
+    int lastRow = utils::ROWS - 1;
+    int currentColumn = 0;
+
     for (int pivotRow = 0; pivotRow < lastRow; pivotRow++) {
-        if (array[pivotRow][pivotRow] != 1.0) {
-            divideArrayRow(array, pivotRow, array[pivotRow][pivotRow]);
+        double currentNum = array[pivotRow][pivotRow];
+        for (int findNonZero = currentColumn; currentColumn < utils::COLS; findNonZero++) {
+            if (array[pivotRow + 1][findNonZero] == 0) {
+                currentColumn++;
+            } else {
+                break;
+            }
         }
 
-        for (int targetRow = pivotRow + 1; targetRow < ROWS; targetRow++) {
-            double mult = array[targetRow][pivotRow] / array[pivotRow][pivotRow] * -1.0;
-            multiplyArrayRowAndAdd(array, pivotRow, targetRow, mult);
+        if (array[pivotRow][currentColumn] != 1) {
+            utils::divideArrayRow(array, pivotRow + 1, array[pivotRow + 1][currentColumn]);
         }
+
+        for (int targetRow = pivotRow + 1; targetRow < utils::ROWS; targetRow++) {
+            double mult = array[targetRow][currentColumn] / currentNum * -1.0;
+            utils::multiplyArrayRowAndAdd(array, currentColumn, targetRow, mult);
+        }
+
+        currentColumn++;
     }
+}
 
-    for (int column = COLS - 1; column > 0; column--) {
+void rowreduce::ascend(double** array) {
+    int lastRow = utils::ROWS - 1;
+
+    for (int column = utils::COLS - 1; column > 0; column--) {
         if (array[lastRow][column - 1] == 0) {
-            divideArrayRow(array, lastRow, array[lastRow][column]);
+            utils::divideArrayRow(array, lastRow, array[lastRow][column]);
             return;
         }
     }

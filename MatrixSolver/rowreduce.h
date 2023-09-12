@@ -2,4 +2,8 @@
 
 #include "types.h"
 
-void descend(double** array);
+namespace rowreduce {
+    void rowReduce(double** array);
+    void descend(double** array);
+    void ascend(double** array);
+}
