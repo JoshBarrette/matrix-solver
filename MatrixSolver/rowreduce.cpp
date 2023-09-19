@@ -3,7 +3,6 @@
 
 void rowreduce::rowReduce(double** array) {
     descend(array);
-    ascend(array);
 }
 
 void rowreduce::descend(double** array) {
@@ -21,7 +20,7 @@ void rowreduce::descend(double** array) {
         }
 
         if (array[pivotRow][currentColumn] != 1) {
-            utils::divideArrayRow(array, pivotRow + 1, array[pivotRow + 1][currentColumn]);
+            utils::divideArrayRow(array, pivotRow, array[pivotRow][currentColumn]);
         }
 
         for (int targetRow = pivotRow + 1; targetRow < utils::ROWS; targetRow++) {
@@ -31,15 +30,11 @@ void rowreduce::descend(double** array) {
 
         currentColumn++;
     }
-}
-
-void rowreduce::ascend(double** array) {
-    int lastRow = utils::ROWS - 1;
 
     for (int column = utils::COLS - 1; column > 0; column--) {
         if (array[lastRow][column - 1] == 0) {
             utils::divideArrayRow(array, lastRow, array[lastRow][column]);
-            return;
+            return; // this does NOT work...
         }
     }
 }

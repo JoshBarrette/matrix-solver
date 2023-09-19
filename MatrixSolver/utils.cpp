@@ -53,21 +53,17 @@ void utils::printArrayMatrix(double** array) {
 
 void utils::multiplyArrayRow(double** array, int row, double mult) {
 	for (int i = 0; i < COLS; i++) {
-		if (array[row][i] == 0) {
-			continue;
+		if (array[row][i] != 0) {
+			array[row][i] = array[row][i] * mult;
 		}
-		
-		array[row][i] = array[row][i] * mult;
 	}
 }
 
 void utils::divideArrayRow(double** array, int row, double div) {
 	for (int i = 0; i < COLS; i++) {
-		if (array[row][i] == 0) {
-			continue;
+		if (array[row][i] != 0) {
+			array[row][i] = array[row][i] / div;
 		}
-
-		array[row][i] = array[row][i] / div;
 	}
 }
 

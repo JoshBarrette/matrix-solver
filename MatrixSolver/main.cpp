@@ -3,17 +3,18 @@
 #include "rowreduce.h"
 #include "Matrix.h"
 
-using namespace std;
-
-int main() {
-	double** arrayMatrix;
-	utils::fillArrayMatrixFromArray(arrayMatrix);
-	// utils::printArrayMatrix(arrayMatrix);
-	
+int main() {	
 	Matrix m;
-	m.populateFromArray(arrayMatrix, 3, 4);
+	m.populateFromConstArray();
 
 	m.printMatrix();
+
+	m.reduce();
+
+	std::cout << std::endl;
+	m.printMatrix();
+
+	std::cout << m[3][0] << std::endl;
 
 	return 0;
 }
