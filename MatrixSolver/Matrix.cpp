@@ -1,5 +1,7 @@
 #include "Matrix.h"
 #include "utils.h"
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
 void Matrix::populateFromArray(double** array, int numRows, int numCols) {
@@ -37,38 +39,61 @@ void Matrix::populateFromVector(matrix_t& m) {
     } else {
         this->m_columns = 0;
     }
-
-    // printf("Rows: %d, Cols: %d\n", this->m_rows, this->m_columns);
 }
 
-void Matrix::reduce() {
+void Matrix::populateFromCSV(std::string fileName) {
+    this->m_columns = 0;
+    this->m_rows = 0;
+    this->m_matrix.clear();
+    
+    std::ifstream fileStream(fileName);
+    std::string line;
+
+    while (std::getline (fileStream, line)) {
+        row_t currentRow;
+        std::istringstream lineStream(line);
+        std::string cell;
+
+        while (std::getline(lineStream, cell, ',')) {
+            double value = std::stod(cell);
+            currentRow.push_back(value);
+            this->m_columns++;
+        }
+
+        this->m_matrix.push_back(currentRow);
+        this->m_rows++;
+    }
+
+    this->m_columns = this->m_columns / this->m_rows;
+}
+
+void Matrix::rowReduce() {
     this->descend();
-    // this->ascend();
+    this->ascend();
 }
 
-// TODO: Pretty sure this still doesn't catch some cases.
-// Implement importing from CSVs to make this easier to work on.
 void Matrix::descend() {
     int lastRow = this->m_rows - 1;
     int currentColumn = 0;
 
-    for (int pivotRow = 0; pivotRow < lastRow; pivotRow++) {
-        double currentNum = this->m_matrix[pivotRow][pivotRow];
-        for (int findNonZero = currentColumn; currentColumn < this->m_columns; findNonZero++) {
-            if (this->m_matrix[pivotRow + 1][findNonZero] == 0) {
-                currentColumn++;
-            } else {
-                break;
-            }
+    for (int pivotRow = 0; pivotRow < lastRow && currentColumn < this->m_columns; pivotRow++) {
+        bool shouldContinue = false;
+        if (this->m_matrix[pivotRow][pivotRow] == 0) {
+            shouldContinue = lookForSwap(pivotRow, currentColumn);
         }
 
+        if (shouldContinue) {
+            currentColumn++;
+            continue;
+        }
+        
         if (this->m_matrix[pivotRow][currentColumn] != 1) {
             this->divideRow(pivotRow, this->m_matrix[pivotRow][currentColumn]);
         }
 
         for (int targetRow = pivotRow + 1; targetRow < this->m_rows; targetRow++) {
-            double mult = this->m_matrix[targetRow][currentColumn] / currentNum * -1.0;
-            this->multAndAdd(targetRow, currentColumn, mult);
+            double mult = this->m_matrix[targetRow][currentColumn] * -1.0;
+            this->multAndAdd(targetRow, pivotRow, mult);
         }
 
         currentColumn++;
@@ -82,22 +107,42 @@ void Matrix::descend() {
     }
 }
 
+bool Matrix::lookForSwap(int startingRow, int column) {
+    for (int row = startingRow + 1; row < this->m_rows; row++) {
+        if (this->m_matrix[row][column] != 0) {
+            this->swapRows(startingRow, row);
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void Matrix::swapRows(int rowNum1, int rowNum2) {
+    row_t temp = this->m_matrix[rowNum1];
+    this->m_matrix[rowNum1] = this->m_matrix[rowNum2];
+    this->m_matrix[rowNum2] = temp;
+}
+
 void Matrix::ascend() {
     int currentRow = this->m_rows - 1;
 
-    for (int column = this->m_columns - 1; column > 0 && currentRow > 0; column--) {
-        if (this->m_matrix[currentRow][column - 1] == 0) {
-            // mult and add to row above to continue reducing
+    for (int currentColumn = 0; currentColumn < this->m_columns && currentRow > 0; currentColumn++) {
+        if (this->m_matrix[currentRow][currentColumn] == 0) {
+            continue;
         }
+
+        for (int risingRow = currentRow - 1; risingRow >= 0; risingRow--) {
+            double mult = -1.0 * this->m_matrix[risingRow][currentColumn];
+            this->multAndAdd(risingRow, currentRow, mult);
+        }
+
+        currentRow--;
     }
 }
 
 row_t& Matrix::operator[](int numRow) {
-    if (numRow < this->m_rows && numRow >= 0) {
-        return this->m_matrix[numRow];
-    } else {
-        return row_t{};
-    }
+    return this->m_matrix[numRow];
 }
 
 void Matrix::multiplyRow(int rowNum, double mult) {
@@ -132,22 +177,6 @@ void Matrix::divAndAdd(int targetRowNum, int fromRowNum, double div) {
     for (int i = 0; i < this->m_columns; i++) {
         targetRow[i] += fromRow[i] / div;
     }
-}
-
-matrix_t& Matrix::getMatrix() {
-    return this->m_matrix;
-}
-
-row_t& Matrix::getRow(int rowNum) {
-    return this->m_matrix[rowNum];
-}
-
-int Matrix::getRows() {
-    return this->m_rows;
-}
-
-int Matrix::getCols() {
-    return this->m_columns;
 }
 
 void Matrix::printRow(int numRow) {
