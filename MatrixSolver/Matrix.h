@@ -22,6 +22,7 @@ public:
     void divAndAdd(int targetRowNum, int fromRowNum, double div);
 
     void multiplyMatrixByVector(std::vector<double> vec);
+    void multiplyMatrixByMatrix(matrix_t m);
 
     void rowReduce();
     void descend();

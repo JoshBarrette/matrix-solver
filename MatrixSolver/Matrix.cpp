@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include "utils.h"
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -235,7 +236,7 @@ void Matrix::multiplyMatrixByVector(std::vector<double> vec)
 
     if (vecLength != this->m_columns)
     {
-        printf("Invalid vector size.\n");
+        printf("Incompatible vector size.\n");
         return;
     }
 
@@ -253,6 +254,51 @@ void Matrix::multiplyMatrixByVector(std::vector<double> vec)
 
     this->m_matrix = newMatrix;
     this->m_columns = 1;
+}
+
+void Matrix::multiplyMatrixByMatrix(matrix_t m)
+{
+    int multRows = m.size();
+    // possible out of bounds error (good thing this is just a personal project)
+    int multColumns = m[0].size();
+
+    if (multRows != this->m_columns || multColumns != this->m_rows)
+    {
+        printf("Incompatible matrix sizes.\n");
+        return;
+    }
+
+    matrix_t newMatrix;
+    for (int currentVector = 0; currentVector < multColumns; currentVector++)
+    {
+        for (int currentRow = 0; currentRow < this->m_rows; currentRow++)
+        {
+            row_t row;
+            if (currentVector != 0)
+            {
+                row = newMatrix[currentRow];
+            }
+            row.push_back(0);
+
+            for (int currentColumn = 0; currentColumn < this->m_columns; currentColumn++)
+            {
+                row[currentVector] += this->m_matrix[currentRow][currentColumn] * m[currentColumn][currentVector];
+            }
+
+            if (currentVector == 0)
+            {
+                newMatrix.push_back(row);
+            }
+            else
+            {
+                newMatrix[currentRow] = row;
+            }
+        }
+    }
+
+    this->m_matrix = newMatrix;
+    this->m_rows = multColumns;
+    this->m_columns = multColumns;
 }
 
 void Matrix::printRow(int numRow)
