@@ -230,6 +230,27 @@ void Matrix::divAndAdd(int targetRowNum, int fromRowNum, double div)
     }
 }
 
+void Matrix::transposeMatrix()
+{
+    int newColumns = this->m_rows;
+    int newRows = this->m_columns;
+    matrix_t newMatrix(newRows);
+
+    for (int i = 0; i < newRows; i++)
+    {
+        std::vector<double> newRow(newColumns);
+        newMatrix[i] = newRow;
+        for (int j = 0; j < newColumns; j++)
+        {
+            newMatrix[i][j] = this->m_matrix[j][i];
+        }
+    }
+
+    this->m_columns = newColumns;
+    this->m_rows = newRows;
+    this->m_matrix = newMatrix;
+}
+
 void Matrix::multiplyMatrixByVector(std::vector<double> vec)
 {
     int vecLength = vec.size();
@@ -256,6 +277,8 @@ void Matrix::multiplyMatrixByVector(std::vector<double> vec)
     this->m_columns = 1;
 }
 
+// Can probably clean up this code by initializing the vectors to set sizes
+// instead of just pushing things back over and over
 void Matrix::multiplyMatrixByMatrix(matrix_t m)
 {
     int multRows = m.size();

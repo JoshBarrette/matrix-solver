@@ -21,6 +21,8 @@ public:
     void multAndAdd(int targetRowNum, int fromRowNum, double mult);
     void divAndAdd(int targetRowNum, int fromRowNum, double div);
 
+    void transposeMatrix();
+
     void multiplyMatrixByVector(std::vector<double> vec);
     void multiplyMatrixByMatrix(matrix_t m);
 
