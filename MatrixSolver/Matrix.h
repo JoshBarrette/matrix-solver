@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "types.h"
 
 class Matrix
@@ -19,6 +20,8 @@ public:
     void divideRow(int rowNum, double div);
     void multAndAdd(int targetRowNum, int fromRowNum, double mult);
     void divAndAdd(int targetRowNum, int fromRowNum, double div);
+
+    void multiplyMatrixByVector(std::vector<double> vec);
 
     void rowReduce();
     void descend();

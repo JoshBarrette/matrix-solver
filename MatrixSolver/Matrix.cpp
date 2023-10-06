@@ -229,6 +229,32 @@ void Matrix::divAndAdd(int targetRowNum, int fromRowNum, double div)
     }
 }
 
+void Matrix::multiplyMatrixByVector(std::vector<double> vec)
+{
+    int vecLength = vec.size();
+
+    if (vecLength != this->m_columns)
+    {
+        printf("Invalid vector size.\n");
+        return;
+    }
+
+    matrix_t newMatrix;
+    for (int currentRow = 0; currentRow < this->m_rows; currentRow++)
+    {
+        row_t newRow;
+        newRow.push_back(0);
+        for (int currentColumn = 0; currentColumn < this->m_columns; currentColumn++)
+        {
+            newRow[0] += this->m_matrix[currentRow][currentColumn] * vec[currentColumn];
+        }
+        newMatrix.push_back(newRow);
+    }
+
+    this->m_matrix = newMatrix;
+    this->m_columns = 1;
+}
+
 void Matrix::printRow(int numRow)
 {
     for (double column : m_matrix[numRow])
