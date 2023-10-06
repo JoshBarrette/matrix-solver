@@ -1,7 +1,8 @@
 #include <iostream>
 #include "Matrix.h"
 
-int main() {	
+int main()
+{
 	Matrix m;
 	m.populateFromCSV("../matrix.csv");
 

@@ -3,14 +3,16 @@
 #include <string>
 #include "types.h"
 
-struct Matrix {
+class Matrix
+{
+public:
     int m_rows = 0;
     int m_columns = 0;
     matrix_t m_matrix;
 
-    void populateFromArray(double** array, int numRows, int numCols);
+    void populateFromArray(double **array, int numRows, int numCols);
     void populateFromConstArray();
-    void populateFromVector(matrix_t& m);
+    void populateFromVector(matrix_t &m);
     void populateFromCSV(std::string fileName);
 
     void multiplyRow(int rowNum, double mult);
@@ -25,7 +27,7 @@ struct Matrix {
     bool lookForSwap(int startingRow, int column);
     void swapRows(int rowNum1, int rowNum2);
 
-    row_t& operator[](int numRow);
+    row_t &operator[](int numRow);
 
     void printRow(int numRow);
     void printMatrix();

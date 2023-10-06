@@ -2,15 +2,15 @@
 
 #include "types.h"
 
-namespace utils {
+namespace utils
+{
 	const int ROWS = 3;
 	const int COLS = 4;
 
 	const double CONST_MATRIX[ROWS][COLS] = {
-	{1, 1, 1, 2},
-	{2, 3, 1, 3},
-	{1, -1, -2, -6}
-	};
+		{1, 1, 1, 2},
+		{2, 3, 1, 3},
+		{1, -1, -2, -6}};
 
 	void fillVectorMatrixFromArray(matrix_t &matrix);
 	void printVecMatrix(const matrix_t matrix);
