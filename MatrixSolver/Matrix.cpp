@@ -1,6 +1,7 @@
 #include "Matrix.h"
 #include "utils.h"
 #include <vector>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -24,6 +25,7 @@ void Matrix::populateFromArray(double **array, int numRows, int numCols)
 
 void Matrix::populateFromConstArray()
 {
+    this->m_matrix.clear();
     this->m_rows = utils::ROWS;
     this->m_columns = utils::COLS;
 
@@ -79,6 +81,56 @@ void Matrix::populateFromCSV(std::string fileName)
     }
 
     this->m_columns = this->m_columns / this->m_rows;
+}
+
+std::vector<std::string> Matrix::solve()
+{
+    std::vector<std::string> ans;
+    std::string rowString;
+    bool rowStarted;
+    for (int currentRow = 0; currentRow < this->m_rows; currentRow++)
+    {
+        rowString = "";
+        rowStarted = false;
+        for (int currentColumn = 0; currentColumn < this->m_columns - 1; currentColumn++)
+        {
+            if (this->m_matrix[currentRow][currentColumn] == 0)
+            {
+                continue;
+            }
+
+            if (rowStarted)
+            {
+                rowString.append(
+                    std::to_string(-1.0 * this->m_matrix[currentRow][currentColumn]) + (char)('a' + currentColumn) + " + ");
+            }
+            else
+            {
+                rowString.append(1, (char)'a' + currentColumn).append(" = ");
+                rowStarted = !rowStarted;
+            }
+        }
+
+        if (this->m_matrix[currentRow][this->m_columns - 1] != 0)
+        {
+            rowString.append(std::to_string(this->m_matrix[currentRow][this->m_columns - 1]));
+        }
+        else if (rowString.length() == 4)
+        {
+            rowString.append("0");
+        }
+        else if (rowString.length() > 0)
+        {
+            rowString.resize(rowString.length() - 2);
+        }
+
+        if (!rowString.empty())
+        {
+            ans.push_back(rowString);
+        }
+    }
+
+    return ans;
 }
 
 void Matrix::rowReduce()
@@ -212,6 +264,11 @@ void Matrix::divideRow(int rowNum, double div)
 
 void Matrix::multAndAdd(int targetRowNum, int fromRowNum, double mult)
 {
+    if (mult == 0)
+    {
+        return;
+    }
+
     row_t &fromRow = this->m_matrix[fromRowNum];
     row_t &targetRow = this->m_matrix[targetRowNum];
     for (int i = 0; i < this->m_columns; i++)
@@ -222,6 +279,12 @@ void Matrix::multAndAdd(int targetRowNum, int fromRowNum, double mult)
 
 void Matrix::divAndAdd(int targetRowNum, int fromRowNum, double div)
 {
+    if (div == 0)
+    {
+        printf("Attempted to divide multiply row %d by 0 and add to row %d\n", fromRowNum, targetRowNum);
+        return;
+    }
+
     row_t &fromRow = this->m_matrix[fromRowNum];
     row_t &targetRow = this->m_matrix[targetRowNum];
     for (int i = 0; i < this->m_columns; i++)
@@ -231,6 +294,32 @@ void Matrix::divAndAdd(int targetRowNum, int fromRowNum, double div)
 }
 
 void Matrix::transposeMatrix()
+{
+    if (this->m_columns == this->m_rows)
+    {
+        this->transposeSquareMatrix();
+    }
+    else
+    {
+        this->transposeRectangularMatrix();
+    }
+}
+
+void Matrix::transposeSquareMatrix()
+{
+    double temp;
+    for (int i = 0; i < this->m_columns; i++)
+    {
+        for (int j = 1 + i; j < this->m_columns; j++)
+        {
+            temp = this->m_matrix[i][j];
+            this->m_matrix[i][j] = this->m_matrix[j][i];
+            this->m_matrix[j][i] = temp;
+        }
+    }
+}
+
+void Matrix::transposeRectangularMatrix()
 {
     int newColumns = this->m_rows;
     int newRows = this->m_columns;

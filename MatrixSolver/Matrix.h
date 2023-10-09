@@ -16,22 +16,25 @@ public:
     void populateFromVector(matrix_t &m);
     void populateFromCSV(std::string fileName);
 
+    std::vector<std::string> solve();
+
+    void rowReduce();
+    void descend();
+    bool lookForSwap(int startingRow, int column);
+    void swapRows(int rowNum1, int rowNum2);
+    void ascend();
+
     void multiplyRow(int rowNum, double mult);
     void divideRow(int rowNum, double div);
     void multAndAdd(int targetRowNum, int fromRowNum, double mult);
     void divAndAdd(int targetRowNum, int fromRowNum, double div);
 
     void transposeMatrix();
+    void transposeSquareMatrix();
+    void transposeRectangularMatrix();
 
     void multiplyMatrixByVector(std::vector<double> vec);
     void multiplyMatrixByMatrix(matrix_t m);
-
-    void rowReduce();
-    void descend();
-    void ascend();
-
-    bool lookForSwap(int startingRow, int column);
-    void swapRows(int rowNum1, int rowNum2);
 
     row_t &operator[](int numRow);
 
