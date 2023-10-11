@@ -83,51 +83,56 @@ void Matrix::populateFromCSV(std::string fileName)
     this->m_columns = this->m_columns / this->m_rows;
 }
 
+// This doesn't catch if the matrix is unsolvable :c
 std::vector<std::string> Matrix::solve()
 {
     std::vector<std::string> ans;
-    std::string rowString;
-    bool rowStarted;
-    for (int currentRow = 0; currentRow < this->m_rows; currentRow++)
+    std::string currentVar;
+    int currentRow = 0;
+
+    // I don't think we ever need to worry about the row going out of bounds but I'm playing it safe
+    for (int currentColumn = 0; currentColumn < this->m_columns - 1 && currentRow < this->m_rows; currentColumn++)
     {
-        rowString = "";
-        rowStarted = false;
-        for (int currentColumn = 0; currentColumn < this->m_columns - 1; currentColumn++)
+        currentVar = "";
+
+        if (this->m_matrix[currentRow][currentColumn] == 0)
         {
-            if (this->m_matrix[currentRow][currentColumn] == 0)
+            currentVar.append(1, (char)'a' + currentColumn).append(" = ").append(1, (char)'a' + currentColumn);
+            ans.push_back(currentVar);
+            continue;
+        }
+
+        currentVar.append(1, (char)'a' + currentColumn).append(" = ");
+        for (int subColumn = currentColumn + 1; subColumn < this->m_columns - 1; subColumn++)
+        {
+            if (this->m_matrix[currentRow][subColumn] == 0)
             {
                 continue;
             }
 
-            if (rowStarted)
-            {
-                rowString.append(
-                    std::to_string(-1.0 * this->m_matrix[currentRow][currentColumn]) + (char)('a' + currentColumn) + " + ");
-            }
-            else
-            {
-                rowString.append(1, (char)'a' + currentColumn).append(" = ");
-                rowStarted = !rowStarted;
-            }
+            currentVar.append(
+                std::to_string(-1.0 * this->m_matrix[currentRow][subColumn]) + (char)('a' + subColumn) + " + ");
         }
 
         if (this->m_matrix[currentRow][this->m_columns - 1] != 0)
         {
-            rowString.append(std::to_string(this->m_matrix[currentRow][this->m_columns - 1]));
+            currentVar.append(std::to_string(this->m_matrix[currentRow][this->m_columns - 1]));
         }
-        else if (rowString.length() == 4)
+        else if (currentVar.length() == 4 && this->m_matrix[currentRow][this->m_columns - 1] == 0)
         {
-            rowString.append("0");
+            currentVar.append(std::to_string(this->m_matrix[currentRow][this->m_columns - 1]));
         }
-        else if (rowString.length() > 0)
+        else if (currentVar.length() > 0)
         {
-            rowString.resize(rowString.length() - 2);
+            currentVar.resize(currentVar.length() - 2);
         }
 
-        if (!rowString.empty())
+        if (!currentVar.empty())
         {
-            ans.push_back(rowString);
+            ans.push_back(currentVar);
         }
+
+        currentRow++;
     }
 
     return ans;

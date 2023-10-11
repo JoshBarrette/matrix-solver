@@ -6,7 +6,7 @@
 int main()
 {
 	Matrix m1;
-	m1.populateFromCSV("../test_matrix_1.csv");
+	m1.populateFromCSV("../test_matrix_2.csv");
 	m1.printMatrix();
 	
 	std::cout << std::endl;
