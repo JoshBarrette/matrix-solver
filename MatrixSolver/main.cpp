@@ -12,14 +12,17 @@ int main()
 	std::cout << std::endl;
 
 	m1.rowReduce();
+	m1.countFreeVariables();
 	m1.printMatrix();
-	std::vector<std::string> ans = m1.solve();
+	std::cout << m1.m_freeVariables << std::endl;
 
-	std::cout << std::endl;
+	// std::vector<std::string> ans = m1.solve();
 
-	for (std::string s : ans) {
-		std::cout << s << std::endl;
-	}
+	// std::cout << std::endl;
+
+	// for (std::string s : ans) {
+	// 	std::cout << s << std::endl;
+	// }
 
 	return 0;
 }

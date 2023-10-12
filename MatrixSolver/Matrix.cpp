@@ -94,15 +94,15 @@ std::vector<std::string> Matrix::solve()
     for (int currentColumn = 0; currentColumn < this->m_columns - 1 && currentRow < this->m_rows; currentColumn++)
     {
         currentVar = "";
+        currentVar.append(1, (char)'a' + currentColumn).append(" = ");
 
         if (this->m_matrix[currentRow][currentColumn] == 0)
         {
-            currentVar.append(1, (char)'a' + currentColumn).append(" = ").append(1, (char)'a' + currentColumn);
+            currentVar.append(1, (char)'a' + currentColumn);
             ans.push_back(currentVar);
             continue;
         }
 
-        currentVar.append(1, (char)'a' + currentColumn).append(" = ");
         for (int subColumn = currentColumn + 1; subColumn < this->m_columns - 1; subColumn++)
         {
             if (this->m_matrix[currentRow][subColumn] == 0)
@@ -170,19 +170,52 @@ void Matrix::descend()
 
         for (int targetRow = pivotRow + 1; targetRow < this->m_rows; targetRow++)
         {
-            double mult = this->m_matrix[targetRow][currentColumn] * -1.0;
+            double mult = -1.0 * this->m_matrix[targetRow][currentColumn];
             this->multAndAdd(targetRow, pivotRow, mult);
         }
 
         currentColumn++;
     }
 
-    for (int column = this->m_columns - 1; column > 0; column--)
+    for (int currentRow = this->m_rows - 1; currentRow >= 0; currentRow--)
     {
-        if (this->m_matrix[lastRow][column - 1] == 0)
+        for (int column = 0; column < this->m_columns; column++)
         {
-            this->divideRow(lastRow, this->m_matrix[lastRow][column]);
-            return;
+            if (this->m_matrix[currentRow][column] != 0)
+            {
+                this->divideRow(currentRow, this->m_matrix[currentRow][column]);
+                return;
+            }
+        }
+    }
+}
+
+void Matrix::countFreeVariables()
+{
+    int currentRow = 0;
+    this->m_freeVariables = 0;
+    bool onLastRow = false;
+
+    for (int currentColumn = 0; currentColumn < this->m_columns; currentColumn++)
+    {
+        if (this->m_matrix[currentRow][currentColumn] == 0)
+        {
+            this->m_freeVariables++;
+            continue;
+        }
+        else if (onLastRow && this->m_matrix[currentRow][currentColumn - 1] != 0)
+        {
+            this->m_freeVariables++;
+            continue;
+        }
+
+        if (currentRow < this->m_rows - 1)
+        {
+            currentRow++;
+        }
+        else
+        {
+            onLastRow = true;
         }
     }
 }

@@ -10,6 +10,7 @@ public:
     int m_rows = 0;
     int m_columns = 0;
     matrix_t m_matrix;
+    int m_freeVariables;
 
     void populateFromArray(double **array, int numRows, int numCols);
     void populateFromConstArray();
@@ -17,12 +18,17 @@ public:
     void populateFromCSV(std::string fileName);
 
     std::vector<std::string> solve();
+    void findBasisForNullSpace();
+    void findBasisForKernel();
 
     void rowReduce();
     void descend();
     bool lookForSwap(int startingRow, int column);
     void swapRows(int rowNum1, int rowNum2);
     void ascend();
+
+    // The matrix needs to be in reduced echelon form for this to work properly
+    void countFreeVariables();
 
     void multiplyRow(int rowNum, double mult);
     void divideRow(int rowNum, double div);
