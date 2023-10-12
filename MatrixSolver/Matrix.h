@@ -25,10 +25,7 @@ public:
     void descend();
     bool lookForSwap(int startingRow, int column);
     void swapRows(int rowNum1, int rowNum2);
-    void ascend();
-
-    // The matrix needs to be in reduced echelon form for this to work properly
-    void countFreeVariables();
+    void ascend();    
 
     void multiplyRow(int rowNum, double mult);
     void divideRow(int rowNum, double div);
@@ -46,4 +43,9 @@ public:
 
     void printRow(int numRow);
     void printMatrix();
+    void printMatrixData();
+
+private:
+    // Added what this function does to ascend()
+    void countFreeVariables();
 };

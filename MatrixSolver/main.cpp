@@ -6,15 +6,14 @@
 int main()
 {
 	Matrix m1;
-	m1.populateFromCSV("../test_matrix_2.csv");
+	m1.populateFromCSV("../matrix.csv");
 	m1.printMatrix();
 	
 	std::cout << std::endl;
 
 	m1.rowReduce();
-	m1.countFreeVariables();
 	m1.printMatrix();
-	std::cout << m1.m_freeVariables << std::endl;
+	m1.printMatrixData();
 
 	// std::vector<std::string> ans = m1.solve();
 

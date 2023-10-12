@@ -148,13 +148,15 @@ void Matrix::descend()
 {
     int lastRow = this->m_rows - 1;
     int currentColumn = 0;
+    int lastFilledRow = 0;
 
     for (int pivotRow = 0; pivotRow < lastRow && currentColumn < this->m_columns; pivotRow++)
     {
+        lastFilledRow++;
         bool shouldContinue = false;
         if (this->m_matrix[pivotRow][pivotRow] == 0)
         {
-            shouldContinue = lookForSwap(pivotRow, currentColumn);
+            shouldContinue = this->lookForSwap(pivotRow, currentColumn);
         }
 
         if (shouldContinue)
@@ -177,45 +179,12 @@ void Matrix::descend()
         currentColumn++;
     }
 
-    for (int currentRow = this->m_rows - 1; currentRow >= 0; currentRow--)
+    for (int column = 0; column < this->m_columns; column++)
     {
-        for (int column = 0; column < this->m_columns; column++)
+        if (this->m_matrix[lastFilledRow][column] != 0)
         {
-            if (this->m_matrix[currentRow][column] != 0)
-            {
-                this->divideRow(currentRow, this->m_matrix[currentRow][column]);
-                return;
-            }
-        }
-    }
-}
-
-void Matrix::countFreeVariables()
-{
-    int currentRow = 0;
-    this->m_freeVariables = 0;
-    bool onLastRow = false;
-
-    for (int currentColumn = 0; currentColumn < this->m_columns; currentColumn++)
-    {
-        if (this->m_matrix[currentRow][currentColumn] == 0)
-        {
-            this->m_freeVariables++;
-            continue;
-        }
-        else if (onLastRow && this->m_matrix[currentRow][currentColumn - 1] != 0)
-        {
-            this->m_freeVariables++;
-            continue;
-        }
-
-        if (currentRow < this->m_rows - 1)
-        {
-            currentRow++;
-        }
-        else
-        {
-            onLastRow = true;
+            this->divideRow(lastFilledRow, this->m_matrix[lastFilledRow][column]);
+            return;
         }
     }
 }
@@ -244,6 +213,7 @@ void Matrix::swapRows(int rowNum1, int rowNum2)
 void Matrix::ascend()
 {
     int currentColumn;
+    this->m_freeVariables = this->m_columns;
 
     for (int currentRow = this->m_rows - 1; currentRow > 0; currentRow--)
     {
@@ -253,7 +223,7 @@ void Matrix::ascend()
             {
                 continue;
             }
-
+            this->m_freeVariables--;
             for (int risingRow = currentRow - 1; risingRow >= 0; risingRow--)
             {
                 double mult = -1.0 * this->m_matrix[risingRow][currentColumn];
@@ -266,6 +236,15 @@ void Matrix::ascend()
 
         if (currentColumn == 0)
         {
+            break;
+        }
+    }
+
+    for (int currentColumn = 0; currentColumn<this->m_columns &&this->m_rows> 0; currentColumn++)
+    {
+        if (this->m_matrix[0][currentColumn] != 0)
+        {
+            this->m_freeVariables--;
             return;
         }
     }
@@ -469,5 +448,42 @@ void Matrix::printMatrix()
             printf("%7.1f", column);
         }
         printf("\n");
+    }
+}
+
+void Matrix::printMatrixData()
+{
+    printf("Matrix Data:\n");
+    printf("Rows: %d, columns %d\n", this->m_rows, this->m_columns);
+    printf("Free variables: %d\n", this->m_freeVariables);
+}
+
+void Matrix::countFreeVariables()
+{
+    int currentRow = 0;
+    this->m_freeVariables = 0;
+    bool onLastRow = false;
+
+    for (int currentColumn = 0; currentColumn < this->m_columns; currentColumn++)
+    {
+        if (this->m_matrix[currentRow][currentColumn] == 0)
+        {
+            this->m_freeVariables++;
+            continue;
+        }
+        else if (onLastRow && this->m_matrix[currentRow][currentColumn - 1] != 0)
+        {
+            this->m_freeVariables++;
+            continue;
+        }
+
+        if (currentRow < this->m_rows - 1)
+        {
+            currentRow++;
+        }
+        else
+        {
+            onLastRow = true;
+        }
     }
 }
